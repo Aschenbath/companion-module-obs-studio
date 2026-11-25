@@ -1,10 +1,33 @@
 import { beforeEach, describe, expect, test } from 'vitest'
 import { getAudioActions } from '../../actions/audio.js'
+import { initOBSListeners } from '../../listeners.js'
 import { ObsAudioMonitorType } from '../../types.js'
 import { makeMockInstance, seedSource, type MockInstance } from '../mock/instance.js'
 import { actionEvent } from '../mock/events.js'
 import { MockContext } from '../mock-context.js'
 import { looseActions } from '../loose-definitions.js'
+
+test('audio balance adjustments retain precision from the last OBS update', async () => {
+	const self = makeMockInstance()
+	seedSource(self, 'Mic', 'mic-uuid')
+	initOBSListeners(self)
+	const actions = looseActions(getAudioActions(self))
+	const action = actionEvent('audio_balance', { source: 'Mic', mode: 'adjust', value: 0.5, amount: 0.01 })
+
+	self.socket.emit('InputAudioBalanceChanged', { inputName: 'Mic', inputUuid: 'mic-uuid', inputAudioBalance: 0.5 })
+	await actions['audio_balance'].callback(action, new MockContext())
+	self.socket.emit('InputAudioBalanceChanged', { inputName: 'Mic', inputUuid: 'mic-uuid', inputAudioBalance: 0.51 })
+	await actions['audio_balance'].callback(action, new MockContext())
+
+	expect(self.socket.call).toHaveBeenNthCalledWith(1, 'SetInputAudioBalance', {
+		inputName: 'Mic',
+		inputAudioBalance: 0.51,
+	})
+	expect(self.socket.call).toHaveBeenNthCalledWith(2, 'SetInputAudioBalance', {
+		inputName: 'Mic',
+		inputAudioBalance: 0.52,
+	})
+})
 
 describe('set_audio_tracks', () => {
 	let self: MockInstance

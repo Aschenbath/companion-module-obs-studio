@@ -1190,7 +1190,7 @@ export class OBSApi {
 	}
 
 	public updateSourceBalance(source: OBSSource, balance: number): void {
-		source.inputAudioBalance = utils.roundNumber(balance, 1)
+		source.inputAudioBalance = balance
 		this.self.setVariableValues({ [`balance_${source.validName}`]: source.inputAudioBalance })
 	}
 

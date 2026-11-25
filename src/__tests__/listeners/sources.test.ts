@@ -141,11 +141,11 @@ describe('audio property listeners', () => {
 			inputAudioBalance: 0.7512,
 		})
 
-		expect(self.states.sources.get('mic-uuid')!.inputAudioBalance).toBe(0.8)
-		expect(self.setVariableValues).toHaveBeenCalledWith({ balance_My_Mic: 0.8 })
+		expect(self.states.sources.get('mic-uuid')!.inputAudioBalance).toBe(0.7512)
+		expect(self.setVariableValues).toHaveBeenCalledWith({ balance_My_Mic: 0.7512 })
 		expect(self.sendToActionRecorder).toHaveBeenCalledWith({
 			actionId: 'audio_balance',
-			options: { source: 'My Mic', mode: 'set', value: 0.8 },
+			options: { source: 'My Mic', mode: 'set', value: 0.7512 },
 		})
 	})
 

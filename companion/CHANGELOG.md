@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Audio balance keeps the value reported by OBS, so fine adjustments accumulate correctly and
+  learned and recorded actions preserve the current balance
 - "Source - Active in Preview" now follows enabled nested scenes and groups and refreshes when
   preview, visibility, scene contents, or Studio Mode changes. Sources shown only outside the preview
   no longer activate it
